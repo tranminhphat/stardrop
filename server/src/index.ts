@@ -31,8 +31,29 @@ io.on("connection", socket => {
 
   socket.on("create room", roomId => {
     rooms[roomId] = [socket.id]
-    console.log("Created room with ID: " + roomId)
+    console.log(`User with socket ID: ${socket.id} created room succesfully with room ID ${roomId}`)
     console.log("Total rooms: " + Object.keys(rooms).length)
+  })
+
+  socket.on("join room", roomId => {
+    if (rooms[roomId]) {
+      rooms[roomId].push(socket.id)
+      console.log(`User with socket ID: ${socket.id} joined room succesfully with room ID ${roomId}`)
+      socket.send(
+        JSON.stringify({
+          type: "joinRoom",
+          message: "Join room succesfully"
+        })
+      )
+    } else {
+      console.log(`User with socket ID: ${socket.id} joined room unsuccesfully. room ID ${roomId} does not exist`)
+      socket.send(
+        JSON.stringify({
+          type: "joinRoom",
+          message: "Join room unsuccesfully, room does not exist"
+        })
+      )
+    }
   })
 });
 

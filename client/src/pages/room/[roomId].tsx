@@ -4,15 +4,19 @@ import { io } from "socket.io-client";
 
 const Room = () => {
   const router = useRouter()
-  const { roomId } = router.query
+  const { type, roomId } = router.query
   const socketRef = useRef<any>();
 
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(stream => {
       socketRef.current = io("ws://localhost:4000")
-      socketRef.current.emit("create room", roomId)
+      if (type === "createRoom") {
+        socketRef.current.emit("create room", roomId)
+      } else {
+        socketRef.current.emit("join room", roomId)
+      }
     })
-  }, [roomId])
+  }, [roomId, type])
 
 
   return (
